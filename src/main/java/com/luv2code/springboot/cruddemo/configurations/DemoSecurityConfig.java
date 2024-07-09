@@ -14,6 +14,18 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DemoSecurityConfig {
+    @Bean
+    public UserDetailsManager userDetailsManager(DataSource dataSource) {
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+
+        // define query to retrieve a user by username(user_id)
+        jdbcUserDetailsManager.setUsersByUsernameQuery("select user_id, pw, active from employee_directory.members where user_id=?");
+
+        // define query to retrieve a user roles by username(user_id) from roles
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select user_id, role from employee_directory.roles where user_id=?");
+
+        return  jdbcUserDetailsManager;
+    }
 
 //    @Bean
 //    public InMemoryUserDetailsManager userDetailsManager(){
@@ -63,8 +75,8 @@ public class DemoSecurityConfig {
     }
 
     // Add support fot JDBC (no hardcoded users
-    @Bean
-    public UserDetailsManager userDetailsManager(DataSource dataSource){
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//    @Bean
+//    public UserDetailsManager userDetailsManager(DataSource dataSource){
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 }
